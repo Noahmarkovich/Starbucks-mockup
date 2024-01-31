@@ -1,4 +1,4 @@
-export function Card({ card }) {
+export function Card({ card, onButtonClick }) {
   return (
     <div
       className="card"
@@ -11,6 +11,7 @@ export function Card({ card }) {
         <h1>{card.title}</h1>
         <div className="card-p">{card.paragraph}</div>
         <button
+          onClick={onButtonClick}
           className="round-clear-button"
           style={{
             color: card.color,

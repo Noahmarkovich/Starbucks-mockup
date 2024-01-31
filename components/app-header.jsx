@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { FaLocationDot } from "react-icons/fa6";
 import { SiStarbucks } from "react-icons/si";
 
@@ -9,6 +10,7 @@ const navLinks = [
 ];
 
 export function AppHeader() {
+  const router = useRouter();
   return (
     <section className="app-header">
       <div className="left-header-container">
@@ -28,7 +30,12 @@ export function AppHeader() {
           <FaLocationDot /> Find a store
         </button>
         <div className="login">
-          <button className="round-clear-button">Sign in</button>
+          <button
+            onClick={() => router.push("/login")}
+            className="round-clear-button"
+          >
+            Sign in
+          </button>
           <button className="round-clear-button black">Join now</button>
         </div>
       </div>

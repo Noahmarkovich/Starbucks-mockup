@@ -1,26 +1,28 @@
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 export default function LoginPage() {
   const router = useRouter();
+  const [user, setUser] = useState();
 
   async function handleSubmit(event) {
     event.preventDefault();
-    console.log(event.target);
-    // const formData = new FormData(event.currentTarget);
-    // const email = formData.get("email");
-    // const password = formData.get("password");
+    const formData = new FormData(event.currentTarget);
+    const email = formData.get("email");
+    const password = formData.get("password");
 
-    // const response = await fetch("/api/auth/login", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ email, password }),
-    // });
+    const response = await fetch("/api/auth/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
 
-    // if (response.ok) {
-    //   router.push("/");
-    // } else {
-    //   // Handle errors
-    // }
+    if (response.ok) {
+      setUser(email);
+      router.push("/");
+    } else {
+      // Handle errors
+    }
   }
 
   return (

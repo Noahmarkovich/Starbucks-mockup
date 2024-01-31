@@ -80,11 +80,39 @@ const notes = [
   },
 ];
 export default function HomePage() {
+  async function onButtonClick(ev, card) {
+    const data = {
+      buttonText: card.button,
+      bannerTitle: card.title,
+      bannerContent: card.paragraph,
+      bannerPosition: ev.target.getBoundingClientRect(),
+      screenSize: {
+        height: ev.view.screen.height,
+        width: ev.view.screen.width,
+      },
+    };
+    const response = await fetch("/api/track", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
+
+    if (response.ok) {
+      console.log(data);
+    }
+  }
+
   return (
     <section className="home-page">
       <main className="main-cards">
         {data.map((card) => {
-          return <Card key={card.id} card={card} />;
+          return (
+            <Card
+              key={card.id}
+              card={card}
+              onButtonClick={(ev) => onButtonClick(ev, card)}
+            />
+          );
         })}
       </main>
       <section className="notices">
