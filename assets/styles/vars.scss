@@ -1,0 +1,33 @@
+.round-clear-button {
+  background: none;
+  font-size: 1rem;
+  padding: 7px 16px;
+  border-radius: 50px;
+  border: 1px solid black;
+  cursor: pointer;
+  font-weight: 700;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.114);
+  }
+
+  &.black {
+    background-color: black;
+    color: white;
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.631);
+    }
+  }
+}
+
+.only-text-button {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+
+  &:hover {
+    color: #00754a;
+  }
+}
