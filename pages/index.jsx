@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Card } from "../components/card";
+import { LoadingSpinner } from "@/components/loading-spinner";
 
 const notes = [
   {
@@ -19,50 +20,56 @@ export default function HomePage() {
   }, []);
 
   async function onButtonClick(ev, card) {
-    const data = {
-      buttonText: card.button,
-      bannerTitle: card.title,
-      bannerContent: card.paragraph,
-      bannerPosition: ev.target.getBoundingClientRect(),
-      screenSize: {
-        height: ev.view.screen.height,
-        width: ev.view.screen.width,
-      },
-    };
+    const userAgent = window.navigator.userAgent;
+
     const response = await fetch("/api/track", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({
+        buttonText: card.button,
+        bannerTitle: card.title,
+        bannerContent: card.paragraph,
+        bannerPosition: ev.target.getBoundingClientRect(),
+        screenSize: {
+          height: ev.view.screen.height,
+          width: ev.view.screen.width,
+        },
+        userAgent,
+      }),
     });
 
-    if (response.ok) {
-      console.log(data);
+    if (!response.ok) {
+      throw new Error("Network response was not ok");
     }
+    const savedData = await response.json();
+    console.log(savedData);
   }
 
   async function loadContent() {
     try {
-      const response = await fetch("/api/dashboard");
+      const response = await fetch("/api/dashboard", {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      setData(data);
+      setData(data.data);
     } catch (error) {
       console.error("Error fetching data:", error.message);
     }
   }
 
-  if (!data) return <div>loading..</div>;
+  if (!data) return <LoadingSpinner />;
   return (
     <section className="home-page">
       <main className="main-cards">
         {data.map((card) => {
           return (
             <Card
-              key={card.id}
+              key={card._id}
               card={card}
               onButtonClick={(ev) => onButtonClick(ev, card)}
             />

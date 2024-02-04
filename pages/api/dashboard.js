@@ -1,77 +1,65 @@
-const data = [
-  {
-    id: "c1",
-    title: "Introducing Oleato™",
-    paragraph:
-      "A luxuriously smooth coffee experience perfectly balanced with Partanna® extra virgin olive oil.",
-    button: "Order now",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88469.jpg",
-    backgroundColor: "#cfd84d",
-    color: "#1e3932",
-  },
-  {
-    id: "c2",
-    title: "Savory and satisfying",
-    paragraph:
-      "Grab a subtly sweet Chicken, Maple Butter & Egg Sandwich on the way.",
-    button: "Order now",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88294.jpg",
-    backgroundColor: "#a5c4dc",
-    color: "#1e3932",
-  },
-  {
-    id: "c3",
-    title: "Get rewarded for your routine",
-    paragraph:
-      "Savor each sip a little more with Rewards in the Starbucks app. Join now and the more you visit, the more free favorites you can earn.*",
-    button: "Join for free",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88486.jpg",
-    backgroundColor: "#006241",
-    color: "#ffffff",
-  },
-  {
-    id: "c4",
-    title: "Our latest collection",
-    paragraph:
-      "Savor each sip a Damon Brown celebrates Black culture and his take on community using surprising color palettes, angles, and shapes in this artist series. more with Rewards in the Starbucks app. Join now and the more you visit, the more free favorites you can earn.*",
-    button: "Meet Damon",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88488.jpg",
-    backgroundColor: "#cfd84d",
-    color: "#1e3932",
-  },
-  {
-    id: "c5",
-    title: "Your go-to brought to you",
-    paragraph:
-      "Enjoy 20% off Starbucks orders of $15+ on DoorDash. Offer valid 1/22-2/4. New customers only. Max discount up to $5. Terms apply.**",
-    button: "Order now",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88373.jpg",
-    backgroundColor: "#1e3932",
-    color: "#ffffff",
-  },
-  {
-    id: "c6",
-    title: "“This is our community. We’re in it together.”",
-    paragraph:
-      "- Olivia, Starbucks Partner (Employee) Our partners uplift each other and their communities every day.",
-    button: "Order now",
-    imageUrl:
-      "https://content-prod-live.cert.starbucks.com/binary/v2/asset/137-88333.jpg",
-    backgroundColor: "#006241",
-    color: "#ffffff",
-  },
-];
+import clientPromise from "@/utils/mongo";
+import { ObjectId } from "mongodb";
 
 export default async function handler(req, res) {
   try {
-    // const res = data;
-    return res.status(200).json(data);
+    const client = await clientPromise;
+    const db = client.db(process.env.DB_NAME);
+    const collection = await db.collection("content");
+    const userCookie = req.cookies.session
+      ? JSON.parse(req.cookies.session)
+      : null;
+
+    switch (req.method) {
+      case "POST":
+        if (!userCookie) {
+          return res.status(401).json({ success: false });
+        }
+        if (!userCookie.isAdmin) {
+          return res.status(403).json({ success: false });
+        }
+
+        const { newCard } = req.body;
+        const addedCard = await collection.insertOne(newCard);
+        res.status(200).json({
+          success: true,
+          message: "Added card!:" + addedCard.insertedId,
+        });
+        break;
+      case "PUT":
+        if (!userCookie) {
+          return res.status(401).json({ success: false });
+        }
+        if (!userCookie.isAdmin) {
+          return res.status(403).json({ success: false });
+        }
+
+        const { editData } = req.body;
+        const promises = Object.entries(editData).map(([cardId, card]) => {
+          const filter = { _id: ObjectId(cardId) };
+          const updateOperation = {
+            $set: {
+              title: card.title,
+              paragraph: card.paragraph,
+              button: card.button,
+              imageUrl: card.imageUrl,
+              backgroundColor: card.backgroundColor,
+              color: card.color,
+            },
+          };
+          return collection.updateOne(filter, updateOperation);
+        });
+
+        await Promise.all(promises);
+        res.status(200).json({ success: true, message: "Cards are updated" });
+        break;
+      case "GET":
+        const data = await await db.collection("content").find({}).toArray();
+        res.json({ status: 200, data });
+        break;
+    }
   } catch (error) {
-    res.status(500).json({ error: "Something went wrong." });
+    console.error("Error fetching data:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
   }
 }

@@ -1,0 +1,41 @@
+.not-permitted-error {
+  height: 50vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.admin-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  margin-top: 50px;
+
+  .card-edit {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    box-shadow: 0 0 3px 0px #00000036;
+    border-radius: 8px;
+    gap: 10px;
+    width: 350px;
+
+    label {
+      margin-right: 5px;
+    }
+
+    textarea {
+      resize: none;
+      font-family: SoDoSans, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 10px;
+      height: 130px;
+    }
+    input[type="text"] {
+      font-family: SoDoSans, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      padding: 10px;
+    }
+  }
+}

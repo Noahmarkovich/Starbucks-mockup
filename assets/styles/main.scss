@@ -1,6 +1,8 @@
 @import "./layout.scss";
 @import "./vars.scss";
 @import "./login-page.scss";
+@import "./admin.scss";
+@import "./spinner.scss";
 
 @font-face {
   font-family: SoDoSans;
@@ -32,43 +34,158 @@ img {
 }
 
 .app-header {
-  padding: 40px 10%;
-  display: flex;
-  justify-content: space-between;
+  padding: 40px 20px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 2px 2px rgba(0, 0, 0, 0.06),
     0 0 2px rgba(0, 0, 0, 0.07);
 
-  .left-header-container {
+  .mobile-header {
     display: flex;
-    gap: 50px;
+    justify-content: space-between;
     align-items: center;
+
     .logo-container {
       font-size: 45px;
       display: flex;
       color: green;
+      cursor: pointer;
     }
+    .burger-options {
+      font-size: 24px;
+      color: #555555;
+      cursor: pointer;
+    }
+  }
+  .dark-screen {
+    background-color: rgba(0, 0, 0, 0.4);
+    position: fixed;
+    height: 100%;
+    top: 0;
+    width: 100%;
+    left: 0;
+    overflow: auto;
+    .mobile-menu {
+      height: 100%;
+      width: 0;
+      position: fixed;
+      z-index: 1;
+      top: 128px;
+      background-color: white;
+      overflow-x: hidden;
+      transition: 0.5s;
+      padding-top: 30px;
+      right: 0;
 
-    nav {
-      a {
-        text-transform: uppercase;
-        margin-right: 20px;
-        font-weight: 700;
+      &.open {
+        width: 80vw;
+      }
 
-        &:hover {
-          color: #00754a;
+      nav {
+        display: flex;
+        flex-direction: column;
+        font-size: 19px;
+        border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+        margin: 18px 32px;
+        a {
+          padding: 18px 0;
+        }
+        a:last-child {
+          padding-bottom: 28px;
+        }
+      }
+      .login {
+        padding: 18px 32px;
+        display: flex;
+        gap: 10px;
+      }
+      .only-text-button {
+        padding: 18px 32px;
+      }
+
+      .loggdin-user {
+        padding: 18px 32px;
+        display: flex;
+        gap: 10px;
+        .user-avatar {
+          border-radius: 50%;
+          text-transform: uppercase;
+          height: 35px;
+          width: 35px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 500;
+          border: 1px solid rgba(0, 0, 0, 0.286);
+          font-size: 20px;
+          cursor: pointer;
         }
       }
     }
   }
-
-  .right-header-container {
+  .desktop-header {
+    max-width: $xl-cards-width;
+    margin: auto;
     display: flex;
-    align-items: center;
-    gap: 40px;
+    justify-content: space-between;
 
-    .login {
-      button:first-child {
-        margin-right: 1rem;
+    .left-header-container {
+      display: flex;
+      gap: 50px;
+      align-items: center;
+      .logo-container {
+        font-size: 45px;
+        display: flex;
+        color: green;
+        cursor: pointer;
+      }
+
+      nav {
+        a {
+          text-transform: uppercase;
+          margin-right: 20px;
+          font-weight: 700;
+
+          &:hover {
+            color: #00754a;
+          }
+        }
+      }
+    }
+
+    .right-header-container {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+
+      .login {
+        button:first-child {
+          margin-right: 1rem;
+        }
+      }
+
+      .user-avatar {
+        border-radius: 50%;
+        text-transform: uppercase;
+        height: 35px;
+        width: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 500;
+        border: 1px solid rgba(0, 0, 0, 0.286);
+        font-size: 20px;
+        cursor: pointer;
+      }
+
+      .user-menu {
+        background: white;
+        margin-top: 10px;
+        box-shadow: 0 0 1px 0px #00000052;
+        padding: 10px;
+        position: absolute;
+        &:hover {
+          background-color: hsl(240deg 7% 97%);
+          cursor: pointer;
+        }
       }
     }
   }
@@ -83,9 +200,10 @@ img {
     .card {
       display: flex;
       align-items: center;
+      flex-direction: column-reverse;
       margin-bottom: 50px;
       .card-text-container {
-        width: 50%;
+        width: 100%;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -95,25 +213,30 @@ img {
         gap: 50px;
 
         h1 {
-          font-size: 50px;
+          font-size: 28px;
         }
         .card-p {
-          font-size: 24px;
+          font-size: 22px;
         }
       }
       .card-image-container {
-        width: 50%;
+        // width: 50%;
       }
     }
+
+    // .card:nth-child(even) {
+    //   flex-direction: row-reverse;
+    // }
   }
 
   .notices {
     text-align: center;
     margin: auto;
-    max-width: 50%;
+    max-width: 90%;
+    font-size: 14px;
 
     div:first-child {
-      margin-bottom: 100px;
+      margin-bottom: 10px;
     }
   }
 }
@@ -122,7 +245,7 @@ footer {
   margin-top: 50px;
   box-shadow: 0 -1px 3px rgba(0, 0, 0, 0.1), 0 -2px 2px rgba(0, 0, 0, 0.06),
     0 0 2px rgba(0, 0, 0, 0.07);
-  padding: 30px 150px;
+  padding: 30px 10px;
 
   .social-media {
     font-size: 24px;
@@ -144,12 +267,14 @@ footer {
   .site-links {
     font-size: 16px;
     display: flex;
+    flex-direction: column;
     gap: 20px;
     font-weight: 500;
     margin-bottom: 20px;
 
     span {
       margin-left: 20px;
+      display: none;
     }
     a:last-child {
       span {
@@ -159,32 +284,68 @@ footer {
   }
 }
 
-@media only screen and (max-width: 770px) {
+@media only screen and (min-width: 768px) {
   .home-page {
-    .card {
-      display: flex;
-      flex-direction: column;
-      // align-items: center;
-      // margin-bottom: 50px;
-      .card-text-container {
-        width: 20%;
-        // display: flex;
-        // flex-direction: column;
+    .main-cards {
+      .card {
+        display: flex;
+        flex-direction: row;
         // align-items: center;
-        // text-align: center;
-        // justify-content: center;
-        // padding: 32px 60px;
-        // gap: 50px;
+        // margin-bottom: 50px;
+        .card-text-container {
+          width: 50%;
+          // display: flex;
+          // flex-direction: column;
+          // align-items: center;
+          // text-align: center;
+          // justify-content: center;
+          // padding: 32px 60px;
+          // gap: 50px;
 
-        h1 {
-          font-size: 28px;
+          h1 {
+            font-size: 50px;
+          }
+          .card-p {
+            font-size: 24px;
+          }
         }
-        .card-p {
-          font-size: 15px;
+        .card-image-container {
+          width: 50%;
         }
       }
-      .card-image-container {
-        width: 70%;
+    }
+    .card:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .notices {
+      max-width: 50%;
+      font-size: 14px;
+
+      div:first-child {
+        margin-bottom: 100px;
+      }
+    }
+  }
+}
+
+@media only screen and (min-width: 1450px) {
+  footer {
+    padding: 30px 150px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  footer {
+    .site-links {
+      flex-direction: row;
+      span {
+        display: inline;
+      }
+      a:last-child {
+        span {
+          display: none;
+        }
       }
     }
   }
